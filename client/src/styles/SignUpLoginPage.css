@@ -1,0 +1,108 @@
+/* Main container with gradient background */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    /* adjust however is best */
+    background: radial-gradient(circle at top left, #bdddff, transparent 30%),
+                radial-gradient(circle at bottom right, #c1edcc, transparent 30%),
+                radial-gradient(circle at bottom left, #fcd9aa, transparent 30%),
+                radial-gradient(circle at top right, #ffb9e8, transparent 30%),
+                radial-gradient(circle at center, #ffffff, #d8c8e0, #c3b0db);
+    background-size: cover;
+    position: relative;
+}
+
+/* Back arrow styling */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5rem; 
+    color: #c32ff9;
+    background: transparent; 
+    padding: 8px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s, font-size 0.3s;
+}
+
+.back-arrow:hover {
+    background: rgba(255, 255, 255, 0.8); 
+    color: #c32ff9;
+}
+
+/* Separate toggle buttons */
+.toggle-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.toggle-button {
+    padding: 10px 30px;
+    font-size: 1.2rem;
+    color: #333;
+    background: #ddd;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.toggle-button.active {
+    background: #c32ff9;
+    color: #fff;
+    border-color: #c32ff9;
+}
+
+.toggle-button:not(.active):hover {
+    background: #ccc;
+    border-color: #ccc;
+}
+
+/* Form container */
+.form-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+input {
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button {
+    padding: 12px;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #c32ff9;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #c32ff9;
+}
+
+

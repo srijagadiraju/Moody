@@ -1,0 +1,56 @@
+.landing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    background: radial-gradient(circle at top left, #cce5ff, transparent 30%), /* Light blue */
+                radial-gradient(circle at top right, #d4edda, transparent 30%), /* Light green */
+                radial-gradient(circle at bottom left, #fff3cd, transparent 30%), /* Light yellow */
+                radial-gradient(circle at bottom right, #f8d7da, transparent 30%), /* Light pink */
+                radial-gradient(circle at center, #ffffff, #d8c8e0, #c3b0db); /* Lavender center gradient */
+    background-size: cover;
+}
+
+/* Title styling */
+.landing-title {
+    font-size: 8rem;
+    color: #333;
+    margin-bottom: 1px;
+    font-weight: bold;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Description styling for a single line */
+.landing-description {
+    font-size: 2rem;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 800px;
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    white-space: nowrap; 
+}
+
+/* Buttons placed horizontally */
+.button-group {
+    display: flex;
+    gap: 20px;
+}
+
+/* Button styling */
+.auth-button {
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: #c32ff9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+    background-color: #a831d3;
+}

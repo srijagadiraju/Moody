@@ -1,0 +1,20 @@
+{
+  "name": "cs5500_f24_group3_moody",
+  "version": "1.0.0",
+  "description": "Name: Srija Gadiraju Email: gadiraju.sr@northeastern.edu<br> Name: Vicki Diaz Rodas Email: diazrodas.v@northeastern.edu<br> Name: Shivam Dixit Email: dixit.shiv@northeastern.edu<br> Name: Monisha Dhana Vijeya Email: dhanavijeya.m@northeastern.edu<br>",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "mongodb": "^6.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  }
+}
