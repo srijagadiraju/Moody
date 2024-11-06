@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../styles/MoodPage.css';
 import angryImage from '../images/angry.png';
 import happyImage from '../images/happy.png';
@@ -10,19 +10,7 @@ import calmImage from '../images/calm.png';
 import embarrassedImage from '../images/embarrassed.png';
 import depressedImage from '../images/depressed.png';
 import confusedImage from '../images/confused.png';
-
-// const moods = [
-//     { id: 1, name: 'Angry', color: '#FF0000', image: 'images/angry.png' },
-//     { id: 2, name: 'Happy', color: '#FFD700', image: 'images/happy.png' },
-//     { id: 3, name: 'Sad', color: '#1E90FF', image: 'images/sad.png' },
-//     { id: 4, name: 'Excited', color: '#FFA500', image: 'images/excited.png' },
-//     { id: 5, name: 'Anxious', color: '#FF4500', image: 'images/anxious.png' },
-//     { id: 6, name: 'Bored', color: '#808080', image: 'images/bored.png' },
-//     { id: 7, name: 'Calm', color: '#00CED1', image: 'images/calm.png' },
-//     { id: 8, name: 'Embarrassed', color: '#FF69B4', image: 'images/embarrassed.png' },
-//     { id: 9, name: 'Depressed', color: '#4B0082', image: 'images/depressed.png' },
-//     { id: 10, name: 'Confused', color: '#8B4513', image: 'images/confused.png' },
-// ];
+import axios from 'axios';
 
 const moods = [
     { id: 1, name: 'Angry', color: '#FF0000', image: angryImage },
@@ -37,8 +25,28 @@ const moods = [
     { id: 10, name: 'Confused', color: '#8B4513', image: confusedImage },
 ];
 
-
 const MoodPage = () => {
+    const [selectedMood, setSelectedMood] = useState('');
+    const [questions, setQuestions] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    const fetchQuestions = async (mood) => {
+        setLoading(true);
+        try {
+            const response = await axios.post('http://localhost:5001/api/generate-questions', { mood });
+            setQuestions(response.data);
+        } catch (error) {
+    console.error("Error fetching questions:", error.response ? error.response.data : error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleMoodClick = (mood) => {
+        setSelectedMood(mood.name);
+        fetchQuestions(mood.name);
+    };
+
     return (
         <div className="mood-selection-container">
             <h1 className="mood-question">How are you feeling today?</h1>
@@ -50,12 +58,25 @@ const MoodPage = () => {
                         style={{ color: mood.color }}
                         onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = mood.color)}
                         onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '')}
+                        onClick={() => handleMoodClick(mood)}
                     >
                         <span className="mood-name">{mood.name}</span>
                         <img src={mood.image} alt={`${mood.name} icon`} className="mood-image" />
                     </button>
                 ))}
             </div>
+
+            {loading && <p>Loading questions...</p>}
+            {questions.length > 0 && (
+                <div>
+                    <h2>Generated Questions for {selectedMood}:</h2>
+                    <ul>
+                        {questions.map((question, index) => (
+                            <li key={index}>{question}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     );
 };
