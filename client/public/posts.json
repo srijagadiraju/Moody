@@ -1,0 +1,272 @@
+[
+  {
+    "id": 1,
+    "subject": "Going for Walks",
+    "message": "Walking daily has improved my mood and mental clarity.",
+    "likes": 15,
+    "comments": [
+      { "id": 1, "text": "Totally agree! Walking has been life-changing for me." }
+    ]
+  },
+  {
+    "id": 2,
+    "subject": "Listening to Music",
+    "message": "Listening to calming music before bed helps me sleep better.",
+    "likes": 22,
+    "comments": [
+      { "id": 2, "text": "Music is therapy!" }
+    ]
+  },
+  {
+    "id": 3,
+    "subject": "Meditation",
+    "message": "Meditating for 10 minutes each morning brings me peace.",
+    "likes": 30,
+    "comments": [
+      { "id": 3, "text": "Meditation changed my life too." }
+    ]
+  },
+  {
+    "id": 4,
+    "subject": "Yoga",
+    "message": "Yoga helps me relax and stretch out the tension.",
+    "likes": 25,
+    "comments": [
+      { "id": 4, "text": "Yoga is so rejuvenating!" }
+    ]
+  },
+  {
+    "id": 5,
+    "subject": "Journaling",
+    "message": "Writing down my thoughts helps me process my emotions.",
+    "likes": 10,
+    "comments": [
+      { "id": 5, "text": "Journaling is like free therapy." }
+    ]
+  },
+  {
+    "id": 6,
+    "subject": "Practicing Gratitude",
+    "message": "Listing things I am grateful for keeps me grounded.",
+    "likes": 18,
+    "comments": [
+      { "id": 6, "text": "Gratitude really shifts perspective!" }
+    ]
+  },
+  {
+    "id": 7,
+    "subject": "Limiting Social Media",
+    "message": "Reducing time on social media has reduced my anxiety.",
+    "likes": 20,
+    "comments": [
+      { "id": 7, "text": "Social media detox is a must." }
+    ]
+  },
+  {
+    "id": 8,
+    "subject": "Setting Small Goals",
+    "message": "Setting achievable goals gives me a sense of purpose.",
+    "likes": 27,
+    "comments": [
+      { "id": 8, "text": "Yes! Small wins build confidence." }
+    ]
+  },
+  {
+    "id": 9,
+    "subject": "Pet Therapy",
+    "message": "Playing with my pet always lifts my spirits.",
+    "likes": 50,
+    "comments": [
+      { "id": 9, "text": "Pets are the best therapists!" }
+    ]
+  },
+  {
+    "id": 10,
+    "subject": "Reading Books",
+    "message": "Reading fiction helps me escape and relax.",
+    "likes": 40,
+    "comments": [
+      { "id": 10, "text": "Books are my happy place." }
+    ]
+  },
+  {
+    "id": 11,
+    "subject": "Therapy",
+    "message": "Talking to a therapist has really helped me understand myself better.",
+    "likes": 60,
+    "comments": [
+      { "id": 11, "text": "Therapy is amazing for self-awareness." }
+    ]
+  },
+  {
+    "id": 12,
+    "subject": "Spending Time in Nature",
+    "message": "Being outside in nature calms me down.",
+    "likes": 30,
+    "comments": [
+      { "id": 12, "text": "Nature is so healing!" }
+    ]
+  },
+  {
+    "id": 13,
+    "subject": "Connecting with Friends",
+    "message": "Socializing with friends gives me a boost.",
+    "likes": 23,
+    "comments": [
+      { "id": 13, "text": "Good friends make everything better." }
+    ]
+  },
+  {
+    "id": 14,
+    "subject": "Practicing Mindfulness",
+    "message": "Being mindful helps me stay in the moment.",
+    "likes": 18,
+    "comments": [
+      { "id": 14, "text": "Mindfulness is a great skill to have." }
+    ]
+  },
+  {
+    "id": 15,
+    "subject": "Taking Breaks",
+    "message": "Short breaks during the day help me recharge.",
+    "likes": 33,
+    "comments": [
+      { "id": 15, "text": "Breaks are so important!" }
+    ]
+  },
+  {
+    "id": 16,
+    "subject": "Gardening",
+    "message": "Taking care of plants relaxes me.",
+    "likes": 15,
+    "comments": [
+      { "id": 16, "text": "Gardening is very therapeutic." }
+    ]
+  },
+  {
+    "id": 17,
+    "subject": "Breathing Exercises",
+    "message": "Simple breathing techniques help me stay calm.",
+    "likes": 25,
+    "comments": [
+      { "id": 17, "text": "Breathing exercises work wonders." }
+    ]
+  },
+  {
+    "id": 18,
+    "subject": "Drinking Herbal Tea",
+    "message": "A cup of tea helps me unwind in the evening.",
+    "likes": 14,
+    "comments": [
+      { "id": 18, "text": "Chamomile tea is my favorite!" }
+    ]
+  },
+  {
+    "id": 19,
+    "subject": "Practicing Self-Compassion",
+    "message": "Being kind to myself has improved my mental health.",
+    "likes": 17,
+    "comments": [
+      { "id": 19, "text": "Self-love is so important." }
+    ]
+  },
+  {
+    "id": 20,
+    "subject": "Using a Weighted Blanket",
+    "message": "My weighted blanket helps me sleep better.",
+    "likes": 28,
+    "comments": [
+      { "id": 20, "text": "Weighted blankets are amazing!" }
+    ]
+  },
+  {
+    "id": 21,
+    "subject": "Listening to Podcasts",
+    "message": "Mental health podcasts give me new insights.",
+    "likes": 32,
+    "comments": [
+      { "id": 21, "text": "Podcasts are so inspiring!" }
+    ]
+  },
+  {
+    "id": 22,
+    "subject": "Practicing Visualization",
+    "message": "Visualizing positive outcomes helps me reduce anxiety.",
+    "likes": 18,
+    "comments": [
+      { "id": 22, "text": "Visualization is powerful." }
+    ]
+  },
+  {
+    "id": 23,
+    "subject": "Watching Comedy Shows",
+    "message": "Laughing at comedy shows helps me feel better.",
+    "likes": 20,
+    "comments": [
+      { "id": 23, "text": "Laughter is the best medicine!" }
+    ]
+  },
+  {
+    "id": 24,
+    "subject": "Trying New Recipes",
+    "message": "Cooking new recipes is fun and relaxing.",
+    "likes": 27,
+    "comments": [
+      { "id": 24, "text": "Cooking is a creative outlet!" }
+    ]
+  },
+  {
+    "id": 25,
+    "subject": "Taking a Warm Bath",
+    "message": "A warm bath at night helps me sleep.",
+    "likes": 15,
+    "comments": [
+      { "id": 25, "text": "Baths are so relaxing." }
+    ]
+  },
+  {
+    "id": 26,
+    "subject": "Working on a Hobby",
+    "message": "Engaging in a hobby helps distract me from stress.",
+    "likes": 29,
+    "comments": [
+      { "id": 26, "text": "Hobbies are great stress relievers." }
+    ]
+  },
+  {
+    "id": 27,
+    "subject": "Volunteering",
+    "message": "Helping others has a positive effect on my mood.",
+    "likes": 30,
+    "comments": [
+      { "id": 27, "text": "Giving back feels great." }
+    ]
+  },
+  {
+    "id": 28,
+    "subject": "Reducing Caffeine Intake",
+    "message": "Reducing caffeine helps me feel less anxious.",
+    "likes": 13,
+    "comments": [
+      { "id": 28, "text": "Caffeine definitely affects my mood." }
+    ]
+  },
+  {
+    "id": 29,
+    "subject": "Stretching",
+    "message": "Stretching relieves physical tension and stress.",
+    "likes": 11,
+    "comments": [
+      { "id": 29, "text": "Stretching is super helpful!" }
+    ]
+  },
+  {
+    "id": 30,
+    "subject": "Drinking More Water",
+    "message": "Staying hydrated helps me feel more energetic.",
+    "likes": 23,
+    "comments": [
+      { "id": 30, "text": "Water is key to everything!" }
+    ]
+  }
+]
