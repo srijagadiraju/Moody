@@ -1,150 +1,3 @@
-// // import React, { useState, useEffect } from 'react';
-// // import '../styles/CommunityPage.css';
-
-// // const CommunityPage = () => {
-// //   const [posts, setPosts] = useState([]);
-// //   const [expandedPost, setExpandedPost] = useState(null);
-// //   const [currentPage, setCurrentPage] = useState(1);
-// //   const postsPerPage = 12;
-
-// //   useEffect(() => {
-// //     fetch('/posts.json')
-// //       .then((response) => response.json())
-// //       .then((data) => setPosts(data))
-// //       .catch((error) => console.error('Fetch error:', error));
-// //   }, []);
-
-// //   const toggleComments = (postId) => {
-// //     setExpandedPost(expandedPost === postId ? null : postId);
-// //   };
-
-// //   const handlePageChange = (page) => {
-// //     setCurrentPage(page);
-// //   };
-
-// //   // Calculate paginated posts
-// //   const indexOfLastPost = currentPage * postsPerPage;
-// //   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-// //   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-// //   return (
-// //     <div className="community-page">
-// //       <h1>Community Posts</h1>
-// //       <div className="posts-container">
-// //         {currentPosts.map((post) => (
-// //           <div key={post.id} className="post-card">
-// //             <h2 className="post-subject">{post.subject}</h2>
-// //             <p className="post-message">{post.message}</p>
-// //             <div className="post-actions">
-// //               <button className="like-button">👍 {post.likes}</button>
-// //               <button className="comment-button" onClick={() => toggleComments(post.id)}>
-// //                 {expandedPost === post.id ? '▼' : '▶'} Comments
-// //               </button>
-// //             </div>
-// //             {expandedPost === post.id && (
-// //               <div className="comments-section">
-// //                 {post.comments.map((comment) => (
-// //                   <p key={comment.id} className="comment">{comment.text}</p>
-// //                 ))}
-// //                 <input type="text" placeholder="Add a comment..." className="comment-input" />
-// //                 <button className="add-comment-button">Comment</button>
-// //               </div>
-// //             )}
-// //           </div>
-// //         ))}
-// //       </div>
-
-// //       {/* Pagination */}
-// //       <div className="pagination">
-// //         {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
-// //           <button
-// //             key={index + 1}
-// //             onClick={() => handlePageChange(index + 1)}
-// //             className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
-// //           >
-// //             {index + 1}
-// //           </button>
-// //         ))}
-// //       </div>
-// //     </div>
-// //   );
-// // };
-
-// // export default CommunityPage;
-
-// import React, { useState, useEffect } from 'react';
-// import '../styles/CommunityPage.css';
-
-// const CommunityPage = () => {
-//   const [posts, setPosts] = useState([]);
-//   const [expandedPost, setExpandedPost] = useState(null);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const postsPerPage = 12;
-
-//   useEffect(() => {
-//     fetch('/posts.json')
-//       .then((response) => response.json())
-//       .then((data) => setPosts(data))
-//       .catch((error) => console.error('Fetch error:', error));
-//   }, []);
-
-//   const toggleComments = (postId) => {
-//     setExpandedPost(expandedPost === postId ? null : postId);
-//   };
-
-//   const handlePageChange = (page) => {
-//     setCurrentPage(page);
-//   };
-
-//   // Calculate paginated posts
-//   const indexOfLastPost = currentPage * postsPerPage;
-//   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-//   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-//   return (
-//     <div className="community-page">
-//       <h1>Community Posts</h1>
-//       <div className="posts-container">
-//         {currentPosts.map((post) => (
-//           <div key={post.id} className="post-card">
-//             <h2 className="post-subject">{post.subject}</h2>
-//             <p className="post-message">{post.message}</p>
-//             <div className="post-actions">
-//               <button className="comment-button" onClick={() => toggleComments(post.id)}>
-//                 {expandedPost === post.id ? '▼' : '▶'} Comments
-//               </button>
-//               <button className="like-button">👍 {post.likes}</button>
-//             </div>
-//             {expandedPost === post.id && (
-//               <div className="comments-section">
-//                 {post.comments.map((comment) => (
-//                   <p key={comment.id} className="comment">{comment.text}</p>
-//                 ))}
-//                 <input type="text" placeholder="Add a comment..." className="comment-input" />
-//                 <button className="add-comment-button">Comment</button>
-//               </div>
-//             )}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Pagination */}
-//       <div className="pagination">
-//         {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
-//           <button
-//             key={index + 1}
-//             onClick={() => handlePageChange(index + 1)}
-//             className={`page-button ${currentPage === index + 1 ? 'active' : ''}`}
-//           >
-//             {index + 1}
-//           </button>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default CommunityPage;
 import React, { useState, useEffect } from 'react';
 import '../styles/CommunityPage.css';
 
@@ -154,10 +7,11 @@ const CommunityPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [newPost, setNewPost] = useState({ subject: '', message: '' });
+  const [commentText, setCommentText] = useState("");
   const postsPerPage = 12;
 
   useEffect(() => {
-    fetch('/posts.json')
+    fetch('/api/posts')
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error('Fetch error:', error));
@@ -187,22 +41,53 @@ const CommunityPage = () => {
 
   const handleAddPostSubmit = () => {
     if (newPost.subject && newPost.message) {
-      const updatedPosts = [
-        {
-          id: posts.length + 1,
-          subject: newPost.subject,
-          message: newPost.message,
-          likes: 0,
-          comments: [],
-        },
-        ...posts,
-      ];
-      setPosts(updatedPosts);
-      handleModalClose();
+      fetch('/api/posts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newPost),
+      })
+      .then((response) => response.json())
+      .then((createdPost) => {
+        setPosts([createdPost, ...posts]);
+        handleModalClose();
+      })
+      .catch((error) => console.error('Error adding post:', error));
     }
   };
 
-  // Calculate paginated posts
+  const handleLike = (postId) => {
+    fetch(`/api/posts/${postId}/like`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then((response) => response.ok && setPosts(
+      posts.map((post) =>
+        post._id === postId ? { ...post, likes: post.likes + 1 } : post
+      )
+    ))
+    .catch((error) => console.error('Error liking post:', error));
+  };
+
+  const handleAddComment = (postId) => {
+    if (commentText.trim()) {
+      fetch(`/api/posts/${postId}/comment`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: commentText.trim() }),
+      })
+      .then((response) => response.json())
+      .then(() => {
+        setPosts(posts.map((post) =>
+          post._id === postId
+            ? { ...post, comments: [...post.comments, { text: commentText }] }
+            : post
+        ));
+        setCommentText("");
+      })
+      .catch((error) => console.error('Error adding comment:', error));
+    }
+  };
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
@@ -213,29 +98,38 @@ const CommunityPage = () => {
       <button className="add-post-button" onClick={handleAddPost}>Add Post</button>
       <div className="posts-container">
         {currentPosts.map((post) => (
-          <div key={post.id} className="post-card">
+          <div key={post._id} className="post-card">
             <h2 className="post-subject">{post.subject}</h2>
             <p className="post-message">{post.message}</p>
             <div className="post-actions">
-              <button className="comment-button" onClick={() => toggleComments(post.id)}>
-                {expandedPost === post.id ? '▼' : '▶'} Comments
+              <button className="comment-button" onClick={() => toggleComments(post._id)}>
+                {expandedPost === post._id ? '▼' : '▶'} Comments
               </button>
-              <button className="like-button">👍 {post.likes}</button>
+              <button className="like-button" onClick={() => handleLike(post._id)}>👍 {post.likes}</button>
             </div>
-            {expandedPost === post.id && (
+            {expandedPost === post._id && (
               <div className="comments-section">
-                {post.comments.map((comment) => (
-                  <p key={comment.id} className="comment">{comment.text}</p>
+                {post.comments.map((comment, index) => (
+                  <p key={index} className="comment">{comment.text}</p>
                 ))}
-                <input type="text" placeholder="Add a comment..." className="comment-input" />
-                <button className="add-comment-button">Comment</button>
+                <input
+                  type="text"
+                  placeholder="Add a comment..."
+                  className="comment-input"
+                  value={commentText}
+                  onChange={(e) => setCommentText(e.target.value)}
+                />
+                <button
+                  className="comment-input-button"
+                  onClick={() => handleAddComment(post._id)}
+                >
+                  Comment
+                </button>
               </div>
             )}
           </div>
         ))}
       </div>
-
-      {/* Pagination */}
       <div className="pagination">
         {Array.from({ length: Math.ceil(posts.length / postsPerPage) }, (_, index) => (
           <button
@@ -247,8 +141,6 @@ const CommunityPage = () => {
           </button>
         ))}
       </div>
-
-      {/* Add Post Modal */}
       {showModal && (
         <div className="modal">
           <div className="modal-content">
@@ -279,5 +171,3 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
-
-

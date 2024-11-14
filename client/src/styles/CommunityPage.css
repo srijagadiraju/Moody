@@ -29,13 +29,57 @@
     max-width: 1200px;
   }
   
-  .post-card {
+  /* Add fixed width to the post card to prevent stretching when there is only one card */
+.post-card {
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    width: 300px; /* Set fixed width */
+    margin: auto; /* Center align if only one card */
+  }
+  
+  /* Adjust styles for the comments section */
+  .comments-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Add a specific button style for submitting comments */
+  .add-comment-button {
+    background-color: #00a9e6;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+    width: fit-content;
+    align-self: flex-start;
+  }
+  .add-comment-button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Style the comment input button next to the input field */
+  .comment-input-button {
+    background-color: #ff00b7;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+  }
+  .comment-input-button:hover {
+    background-color: #de0090;
   }
   
   .post-subject {
