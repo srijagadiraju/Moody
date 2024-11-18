@@ -1,0 +1,15 @@
+/* Basic layout styling */
+.layout {
+    display: flex;
+    height: 100vh; /* Full viewport height */
+    width: 100%;
+}
+
+/* Main content area styling */
+.content {
+    margin-left: 200px; /* Match the sidebar width */
+    padding: 0px;
+    width: calc(100% - 200px);
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}

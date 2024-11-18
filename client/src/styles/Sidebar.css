@@ -1,0 +1,56 @@
+/* Sidebar styling */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 180px; /* Slightly increased width for better content fit */
+    height: 100vh;
+    background-color: #343a40; /* Darker background for better contrast */
+    color: #f8f9fa; /* Lighter text color for contrast */
+    padding: 20px;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3); /* Enhanced shadow for depth */
+    display: flex;
+    flex-direction: column;
+    font-family: 'Poppins', sans-serif; /* Matching the profile page font */
+}
+
+/* Sidebar heading styling */
+.sidebar h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    text-align: center;
+    color: #f1f1f1; /* Lighter text color */
+}
+
+/* Navigation menu styling */
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* List item styling */
+.sidebar nav ul li {
+    margin: 15px 0;
+}
+
+/* Links inside the sidebar */
+.sidebar nav ul li a {
+    text-decoration: none;
+    color: #f8f9fa; /* Light color for readability */
+    font-size: 1.2rem;
+    font-weight: 500;
+    transition: color 0.3s, padding-left 0.3s; /* Add padding transition for hover */
+    padding-left: 10px; /* Subtle left padding to align the text */
+}
+
+/* Hover effect for sidebar links */
+.sidebar nav ul li a:hover {
+    color: #1abc9c; /* Accent color for hover effect */
+    padding-left: 20px; /* Slide effect on hover */
+}
+
+/* Active state for sidebar links */
+.sidebar nav ul li a.active {
+    color: #007bff; /* Active link color */
+    font-weight: 600; /* Make the active link more prominent */
+}
