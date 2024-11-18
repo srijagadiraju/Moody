@@ -4,17 +4,22 @@
   "description": "Name: Srija Gadiraju Email: gadiraju.sr@northeastern.edu<br> Name: Vicki Diaz Rodas Email: diazrodas.v@northeastern.edu<br> Name: Shivam Dixit Email: dixit.shiv@northeastern.edu<br> Name: Monisha Dhana Vijeya Email: dhanavijeya.m@northeastern.edu<br>",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "build": "react-scripts build",
+    "eject": "react-scripts eject"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.4.5",
-    "express": "^4.21.1",
-    "mongodb": "^6.10.0"
+    "axios": "^1.7.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
