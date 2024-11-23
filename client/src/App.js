@@ -1,28 +1,51 @@
+
+
+
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./Components/Layout"; // Correct path to Layout.jsx
 import LandingPage from "./pages/LandingPage";
 import SignUpLoginPage from "./pages/SignUpLoginPage";
 import MoodPage from "./pages/MoodPage";
 import CommunityPage from "./pages/CommunityPage";
-import Questions from "./pages/Questions";
-import Activity from "./pages/Activity";
 import ProfilePage from "./pages/ProfilePage";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 
 function App() {
   return (
     <Router>
-      <Layout> {/* Wrapping Routes with Layout */}
+      <div className="App">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpLoginPage />} />
-          <Route path="/mood-selection" element={<MoodPage />} />
-          <Route path="/community" element={<CommunityPage />} />
-          <Route path="/questions" element={<Questions />} />
-          <Route path="/activities" element={<Activity />} />
-          <Route path="/profile" element={<ProfilePage />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/mood-selection"
+            element={
+              <PrivateRoute>
+                <MoodPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/community"
+            element={
+              <PrivateRoute>
+                <CommunityPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+            <PrivateRoute>
+             <ProfilePage />
+            </PrivateRoute>
+            }
+          />
         </Routes>
-      </Layout>
+      </div>
     </Router>
   );
 }

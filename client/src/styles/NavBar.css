@@ -1,0 +1,45 @@
+.nav-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: radial-gradient(circle at top left, #cce5ff, transparent 30%),
+      radial-gradient(circle at top right, #d4edda, transparent 30%),
+      radial-gradient(circle at bottom left, #fff3cd, transparent 30%),
+      radial-gradient(circle at bottom right, #f8d7da, transparent 30%),
+      radial-gradient(circle at center, #ffffff, #d8c8e0, #c3b0db);
+    color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .logo-container {
+    display: flex;
+    align-items: center;
+    padding-left: 50px;
+  }
+
+  .nav-logo {
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+  }
+
+  .nav-bar .nav-buttons-container {
+    display: flex;
+    gap: 20px;
+  }
+
+  .nav-button {
+    background-color: #c547ff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .nav-button:hover {
+    background-color: #a63bd8;
+  }
