@@ -20,7 +20,11 @@
     "util": "^0.12.5"
   },
   "devDependencies": {
-    "nodemon": "^3.1.7"
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.0.1",
+    "jest": "^27.5.1",
+    "nodemon": "^3.1.7",
+    "supertest": "^7.0.0"
   },
   "proxy": "http://localhost:3001"
 }
