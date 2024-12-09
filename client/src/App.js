@@ -4,16 +4,53 @@ import LandingPage from "./pages/LandingPage";
 import SignUpLoginPage from "./pages/SignUpLoginPage";
 import MoodPage from "./pages/MoodPage";
 import CommunityPage from "./pages/CommunityPage";
+import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
+import Questionnaire from "./pages/Questionnaire";
+import ActivitySuggestions from "./pages/ActivitySuggestions";
+import "./index.css";
 
 function App() {
   return (
     <Router>
       <div className="App">
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/signup" element={<SignUpLoginPage />} />
-          <Route path="/mood-selection" element={<MoodPage />} />
-          <Route path="/community" element={<CommunityPage />} />
+
+          {/* Protected Routes */}
+          <Route
+            path="/mood-selection"
+            element={
+              <PrivateRoute>
+                <MoodPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/community"
+            element={
+              <PrivateRoute>
+                <CommunityPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/generate-questions"
+            element={
+              <PrivateRoute>
+                <Questionnaire />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/generate-activities"
+            element={
+              <PrivateRoute>
+                <ActivitySuggestions />
+              </PrivateRoute>
+            }
+          />
         </Routes>
       </div>
     </Router>
