@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/static/css/main.6130a6e0.css",
+    "main.js": "/static/js/main.1f5e180c.js",
+    "static/js/453.419a5d54.chunk.js": "/static/js/453.419a5d54.chunk.js",
+    "static/media/anxious.png": "/static/media/anxious.3c4704316b64727e436e.png",
+    "static/media/confused.png": "/static/media/confused.b9ebbcf0039fc88fe1e1.png",
+    "static/media/excited.png": "/static/media/excited.b7fbc6fb8b15b169605f.png",
+    "static/media/moody.png": "/static/media/moody.88ede54b44d2d5582b39.png",
+    "static/media/depressed.png": "/static/media/depressed.44a6fbe5108de4975d29.png",
+    "static/media/bored.png": "/static/media/bored.78625f91388ee86249ae.png",
+    "static/media/angry.png": "/static/media/angry.c7fafac3376a6d0c2724.png",
+    "static/media/embarrassed.png": "/static/media/embarrassed.410494fd162469b12c6a.png",
+    "static/media/calm.png": "/static/media/calm.7dbf268d9e4720afd4c7.png",
+    "static/media/sad.png": "/static/media/sad.33f7c487c032068ab851.png",
+    "static/media/happy.png": "/static/media/happy.415fdd83b85ed798cb4f.png",
+    "index.html": "/index.html",
+    "main.6130a6e0.css.map": "/static/css/main.6130a6e0.css.map",
+    "main.1f5e180c.js.map": "/static/js/main.1f5e180c.js.map",
+    "453.419a5d54.chunk.js.map": "/static/js/453.419a5d54.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6130a6e0.css",
+    "static/js/main.1f5e180c.js"
+  ]
+}
