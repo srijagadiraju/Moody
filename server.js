@@ -368,7 +368,11 @@ async function main() {
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 3600000, secure: true, sameSite: "none" },
+        cookie: {
+          maxAge: 3600000, // 1 hour
+          secure: process.env.NODE_ENV === "production", // Only secure in production
+          sameSite: "none", // Ensure cookies work cross-site
+        },
       })
     );
     app.use(passport.initialize());

@@ -261,25 +261,28 @@ const NavBar = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Logout failed on backend.");
+          return response.json().then((error) => {
+            console.error("Backend logout error:", error);
+            throw new Error("Logout failed on backend.");
+          });
         }
         console.log("Backend confirmed logout.");
-
+  
         // Clear authentication state
         setAuth({
           isAuthenticated: false,
           user: null,
           loading: false,
         });
-
+  
         // Clear localStorage if persisting auth state
         localStorage.removeItem("authState");
-
+  
         // Redirect to the landing page
         navigate("/");
       })
       .catch((error) => console.error("Error during logout:", error));
-  };
+  };  
 
   return (
     <div className="nav-bar">
