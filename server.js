@@ -15,6 +15,7 @@ const port = process.env.PORT || 5001;
 const allowedOrigin = [
   "http://localhost:3000",
   "https://moody-j5f5.onrender.com",
+  "https://moody-fe.onrender.com",
 ];
 
 // Middleware
