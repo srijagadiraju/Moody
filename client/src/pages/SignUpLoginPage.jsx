@@ -17,6 +17,8 @@ const SignUpLoginPage = () => {
   });
   const [prefilledLoginData, setPrefilledLoginData] = useState(null);
 
+  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
+
   useEffect(() => {
     if (!isSignUp && prefilledLoginData) {
       setFormData(prefilledLoginData);
@@ -29,7 +31,9 @@ const SignUpLoginPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = isSignUp ? "/api/signup" : "/api/login";
+    const endpoint = isSignUp
+      ? `${backendUrl}/api/signup`
+      : `${backendUrl}/api/login`;
     const body = isSignUp
       ? formData
       : { email: formData.email, password: formData.password };

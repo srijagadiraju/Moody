@@ -19,13 +19,14 @@ function Questionnaire() {
       try {
         setLoading(true);
         const response = await fetch(
-          "http://localhost:5001/generate-questions",
+          "https://moody-backend.onrender.com/generate-questions",
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ mood: mood }),
+            credentials: "include",
           }
         );
 

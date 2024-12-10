@@ -19,16 +19,13 @@ const ActivitySuggestions = () => {
 
       try {
         setLoading(true);
-        const response = await fetch(
-          "http://localhost:5001/generate-activities",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ mood, answers }),
-          }
-        );
+        const response = await fetch("/generate-activities", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ mood, answers }),
+        });
 
         if (!response.ok) {
           throw new Error("Failed to fetch activities");

@@ -11,8 +11,10 @@ const CommunityPage = () => {
   const [commentText, setCommentText] = useState("");
   const postsPerPage = 12;
 
+  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
+
   useEffect(() => {
-    fetch("/api/posts")
+    fetch(`${backendUrl}/api/posts`, { credentials: "include" })
       .then((response) => response.json())
       .then((data) => setPosts(data))
       .catch((error) => console.error("Fetch error:", error));
@@ -42,10 +44,11 @@ const CommunityPage = () => {
 
   const handleAddPostSubmit = () => {
     if (newPost.subject && newPost.message) {
-      fetch("/api/posts", {
+      fetch(`${backendUrl}/api/posts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newPost),
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((createdPost) => {
@@ -57,28 +60,30 @@ const CommunityPage = () => {
   };
 
   const handleLike = (postId) => {
-    fetch(`/api/posts/${postId}/like`, {
+    fetch(`${backendUrl}/api/posts/${postId}/like`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
-      .then(
-        (response) =>
-          response.ok &&
+      .then((response) => {
+        if (response.ok) {
           setPosts(
             posts.map((post) =>
               post._id === postId ? { ...post, likes: post.likes + 1 } : post
             )
-          )
-      )
+          );
+        }
+      })
       .catch((error) => console.error("Error liking post:", error));
   };
 
   const handleAddComment = (postId) => {
     if (commentText.trim()) {
-      fetch(`/api/posts/${postId}/comment`, {
+      fetch(`${backendUrl}/api/posts/${postId}/comment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: commentText.trim() }),
+        credentials: "include",
       })
         .then((response) => response.json())
         .then(() => {
