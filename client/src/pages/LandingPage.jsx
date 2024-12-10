@@ -9,7 +9,7 @@ const LandingPage = () => {
     <div className="landing-container">
       <h1 className="landing-title">Moody</h1>
       <p className="landing-description">
-        Your Personalized Mental Health Assistant - Shivam
+        Your Personalized Mental Health Assistant
       </p>
       <div className="button-group">
         <button
