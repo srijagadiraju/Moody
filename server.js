@@ -280,6 +280,7 @@
 
 // main();
 
+// Srija
 const { generateQuestions, generateActivities } = require("./generate");
 const express = require("express");
 const path = require("path");
@@ -301,9 +302,9 @@ const allowedOrigin = [
 // Middleware
 app.use(
   cors({
-    origin: allowedOrigin,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
+    origin: allowedOrigin, // Allow specific origins
+    methods: ["GET", "POST", "PUT"],
+    credentials: true, // Allow credentials (cookies, HTTP auth)
   })
 );
 app.use(express.json());
@@ -375,7 +376,7 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
-      if (req.isAuthenticated() && req.user) {
+      if (req.isAuthenticated()) {
         return next();
       }
       res.status(401).json({ message: "Unauthorized" });
@@ -427,6 +428,7 @@ async function main() {
       });
     });
 
+    // API to check authentication status
     app.get("/api/check-auth", (req, res) => {
       if (req.isAuthenticated()) {
         res.status(200).json({ user: req.user });
@@ -436,7 +438,7 @@ async function main() {
     });
 
     // Community Page Routes
-    app.get("/api/posts", async (req, res) => {
+    app.get("/api/posts", ensureAuthenticated, async (req, res) => {
       try {
         const posts = await postsCollection.find().toArray();
         res.json(posts);
@@ -459,6 +461,8 @@ async function main() {
           message,
           likes: 0,
           comments: [],
+          userId: req.user._id, // Associate the post with the logged-in user
+          createdAt: new Date(),
         };
 
         const result = await postsCollection.insertOne(newPost);
@@ -500,7 +504,11 @@ async function main() {
               .json({ message: "Comment text is required" });
           }
 
-          const newComment = { text };
+          const newComment = {
+            text,
+            userId: req.user._id, // Associate the comment with the logged-in user
+            createdAt: new Date(),
+          };
 
           const result = await postsCollection.updateOne(
             { _id: new ObjectId(postId) },
