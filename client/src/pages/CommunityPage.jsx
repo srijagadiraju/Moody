@@ -54,16 +54,32 @@ const CommunityPage = () => {
     if (newPost.subject && newPost.message) {
       fetch(`${backendUrl}/api/posts`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
+        headers: {
+          "Content-Type": "application/json",
+          // Add this to ensure cookies are sent
+          Accept: "application/json",
+        },
         credentials: "include",
+        body: JSON.stringify(newPost),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((createdPost) => {
           setPosts([createdPost, ...posts]);
           handleModalClose();
         })
-        .catch((error) => console.error("Error adding post:", error));
+        .catch((error) => {
+          console.error("Error adding post:", error);
+          // Add error handling for unauthorized responses
+          if (error.message.includes("401")) {
+            // Handle unauthorized error - maybe redirect to login
+            console.log("User not authenticated");
+          }
+        });
     }
   };
 

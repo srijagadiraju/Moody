@@ -24,6 +24,7 @@ app.use(
     origin: allowedOrigin, // Allow specific origins
     methods: ["GET", "POST", "PUT"],
     credentials: true, // Allow credentials (cookies, HTTP auth)
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   })
 );
 app.use(express.json());
@@ -87,7 +88,12 @@ async function main() {
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 3600000, secure: true, sameSite: "none" },
+        cookie: {
+          maxAge: 3600000,
+          secure: true,
+          sameSite: "none",
+          domain: ".onrender.com",
+        },
       })
     );
     app.use(passport.initialize());
@@ -95,6 +101,10 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
+      console.log("Session:", req.session);
+      console.log("Is Authenticated:", req.isAuthenticated());
+      console.log("User:", req.user);
+
       if (req.isAuthenticated()) {
         return next();
       }
@@ -130,11 +140,21 @@ async function main() {
 
     app.post("/api/login", (req, res, next) => {
       passport.authenticate("local", (err, user, info) => {
-        if (err) return next(err);
-        if (!user) return res.status(400).json({ message: info.message });
+        if (err) {
+          console.error("Authentication error:", err);
+          return next(err);
+        }
+        if (!user) {
+          console.log("Authentication failed:", info.message);
+          return res.status(400).json({ message: info.message });
+        }
 
         req.logIn(user, (err) => {
-          if (err) return next(err);
+          if (err) {
+            console.error("Login error:", err);
+            return next(err);
+          }
+          console.log("Login successful for user:", user._id);
           res.status(200).json({ message: "Login successful", user });
         });
       })(req, res, next);
