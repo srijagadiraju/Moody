@@ -51,7 +51,6 @@ const NavBar = () => {
   //   } catch (err) {
   //     console.error("Error during logout:", err);
   //   }
-  };
 
   return (
     <div className="nav-bar">
