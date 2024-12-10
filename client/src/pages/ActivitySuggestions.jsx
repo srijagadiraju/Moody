@@ -20,7 +20,7 @@ const ActivitySuggestions = () => {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://moody-backend.onrender.com/generate-activities",
+          "https://moody-be.onrender.com/generate-activities",
           {
             method: "POST",
             headers: {

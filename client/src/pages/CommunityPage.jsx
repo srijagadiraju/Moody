@@ -11,7 +11,7 @@ const CommunityPage = () => {
   const [commentText, setCommentText] = useState("");
   const postsPerPage = 12;
 
-  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
+  const backendUrl = "https://moody-be.onrender.com"; // Backend base URL
 
   useEffect(() => {
     fetch(`${backendUrl}/api/posts`, { credentials: "include" })

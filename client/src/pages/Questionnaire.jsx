@@ -19,7 +19,7 @@ function Questionnaire() {
       try {
         setLoading(true);
         const response = await fetch(
-          "https://moody-backend.onrender.com/generate-questions",
+          "https://moody-be.onrender.com/generate-questions",
           {
             method: "POST",
             headers: {
