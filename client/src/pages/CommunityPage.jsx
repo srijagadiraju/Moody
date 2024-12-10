@@ -28,6 +28,20 @@ const CommunityPage = () => {
       });
   }, []);
 
+  useEffect(() => {
+    // Check authentication status when component mounts
+    fetch(`${backendUrl}/api/check-auth`, {
+      credentials: "include",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Auth status:", data);
+      })
+      .catch((error) => {
+        console.error("Auth check error:", error);
+      });
+  }, []);
+
   const toggleComments = (postId) => {
     setExpandedPost(expandedPost === postId ? null : postId);
   };
@@ -50,39 +64,43 @@ const CommunityPage = () => {
     setNewPost({ ...newPost, [name]: value });
   };
 
-  const handleAddPostSubmit = () => {
-    if (newPost.subject && newPost.message) {
-      fetch(`${backendUrl}/api/posts`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add this to ensure cookies are sent
-          Accept: "application/json",
-        },
+  const handleAddPostSubmit = async () => {
+    try {
+      // First check authentication
+      const authResponse = await fetch(`${backendUrl}/api/check-auth`, {
         credentials: "include",
-        body: JSON.stringify(newPost),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          return response.json();
-        })
-        .then((createdPost) => {
-          setPosts([createdPost, ...posts]);
-          handleModalClose();
-        })
-        .catch((error) => {
-          console.error("Error adding post:", error);
-          // Add error handling for unauthorized responses
-          if (error.message.includes("401")) {
-            // Handle unauthorized error - maybe redirect to login
-            console.log("User not authenticated");
-          }
+      });
+
+      if (!authResponse.ok) {
+        console.log("Auth check failed");
+        // Redirect to login or show error
+        return;
+      }
+
+      // If authenticated, proceed with creating post
+      if (newPost.subject && newPost.message) {
+        const response = await fetch(`${backendUrl}/api/posts`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(newPost),
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const createdPost = await response.json();
+        setPosts([createdPost, ...posts]);
+        handleModalClose();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      // Handle error appropriately
     }
   };
-
   const handleLike = (postId) => {
     fetch(`${backendUrl}/api/posts/${postId}/like`, {
       method: "PUT",

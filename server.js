@@ -86,14 +86,15 @@ async function main() {
     app.use(
       session({
         secret: process.env.SESSION_SECRET || "default_secret_key",
-        resave: false,
-        saveUninitialized: false,
+        resave: true, // Changed to true
+        saveUninitialized: true, // Changed to true
         cookie: {
-          maxAge: 3600000,
+          maxAge: 24 * 60 * 60 * 1000, // 24 hours
           secure: true,
           sameSite: "none",
-          domain: ".onrender.com",
+          httpOnly: true,
         },
+        name: "sessionId", // Give the cookie a specific name
       })
     );
     app.use(passport.initialize());
@@ -145,7 +146,6 @@ async function main() {
           return next(err);
         }
         if (!user) {
-          console.log("Authentication failed:", info.message);
           return res.status(400).json({ message: info.message });
         }
 
@@ -154,8 +154,22 @@ async function main() {
             console.error("Login error:", err);
             return next(err);
           }
-          console.log("Login successful for user:", user._id);
-          res.status(200).json({ message: "Login successful", user });
+
+          // Save the session before responding
+          req.session.save((err) => {
+            if (err) {
+              console.error("Session save error:", err);
+              return next(err);
+            }
+
+            console.log("Session after login:", req.session);
+            console.log("Session ID:", req.sessionID);
+            res.status(200).json({
+              message: "Login successful",
+              user,
+              sessionId: req.sessionID,
+            });
+          });
         });
       })(req, res, next);
     });
@@ -169,6 +183,11 @@ async function main() {
 
     // API to check authentication status
     app.get("/api/check-auth", (req, res) => {
+      console.log("Session ID:", req.sessionID);
+      console.log("Session:", req.session);
+      console.log("Is Authenticated:", req.isAuthenticated());
+      console.log("User:", req.user);
+
       if (req.isAuthenticated()) {
         res.status(200).json({ user: req.user });
       } else {
@@ -176,6 +195,14 @@ async function main() {
       }
     });
 
+    app.get("/api/test-session", (req, res) => {
+      if (!req.session.views) {
+        req.session.views = 1;
+      } else {
+        req.session.views++;
+      }
+      res.json({ views: req.session.views });
+    });
     // Community Page Routes
     app.get("/api/posts", async (req, res) => {
       try {
