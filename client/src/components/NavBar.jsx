@@ -105,7 +105,7 @@ const NavBar = () => {
           loading: false,
         });
 
-        // Optionally clear localStorage if you're persisting auth state
+        // Clear localStorage if persisting auth state
         localStorage.removeItem("authState");
 
         // Redirect to the login page
@@ -137,4 +137,3 @@ const NavBar = () => {
 };
 
 export default NavBar;
-
