@@ -12,7 +12,10 @@ require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5001;
-const allowedOrigin = "http://localhost:3000";
+const allowedOrigin = [
+  "http://localhost:3000",
+  "https://moody-j5f5.onrender.com",
+];
 
 // Middleware
 app.use(
