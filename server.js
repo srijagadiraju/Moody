@@ -421,11 +421,28 @@ async function main() {
       })(req, res, next);
     });
 
-    app.get("/api/logout", (req, res) => {
-      req.logout((err) => {
-        if (err) return res.status(500).json({ message: "Error logging out" });
-        res.status(200).json({ message: "Logout successful" });
-      });
+    // app.get("/api/logout", (req, res) => {
+    //   req.logout((err) => {
+    //     if (err) return res.status(500).json({ message: "Error logging out" });
+    //     res.status(200).json({ message: "Logout successful" });
+    //   });
+    // });
+
+    app.get("/api/logout", async (req, res) => {
+      try {
+        await req.logout(); // Async logout
+        req.session.destroy((err) => {
+          if (err) {
+            return res.status(500).json({ message: "Error clearing session" });
+          }
+          res.clearCookie("connect.sid", { path: "/" }); // Clear the session cookie
+          res.status(200).json({ message: "Logout successful" });
+        });
+      } catch (err) {
+        res
+          .status(500)
+          .json({ message: "Error logging out", error: err.message });
+      }
     });
 
     // API to check authentication status

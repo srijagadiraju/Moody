@@ -8,32 +8,49 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { setAuth } = useAuth(); // Use setAuth from AuthContext
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/logout", {
-        method: "GET",
-        credentials: "include", // Ensures cookies are sent
-      });
+  const handleLogout = () => {
+    fetch(`${backendUrl}/api/logout`, {
+      method: "GET",
+      credentials: "include", // Ensure the session cookie is sent
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Logout failed");
+        }
+        console.log("Logout successful");
+        // Redirect to login or clear local state
+        window.location.href = "/login";
+      })
+      .catch((error) => console.error("Error during logout:", error));
+  };
+  
 
-      if (response.ok) {
-        // Clear authentication state
-        setAuth({
-          isAuthenticated: false,
-          user: null,
-          loading: false,
-        });
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await fetch("/api/logout", {
+  //       method: "GET",
+  //       credentials: "include", // Ensures cookies are sent
+  //     });
 
-        // Optionally clear localStorage if you're persisting auth state
-        localStorage.removeItem("authState");
+  //     if (response.ok) {
+  //       // Clear authentication state
+  //       setAuth({
+  //         isAuthenticated: false,
+  //         user: null,
+  //         loading: false,
+  //       });
 
-        // Redirect to the landing page
-        navigate("/");
-      } else {
-        console.error("Logout failed");
-      }
-    } catch (err) {
-      console.error("Error during logout:", err);
-    }
+  //       // Optionally clear localStorage if you're persisting auth state
+  //       localStorage.removeItem("authState");
+
+  //       // Redirect to the landing page
+  //       navigate("/");
+  //     } else {
+  //       console.error("Logout failed");
+  //     }
+  //   } catch (err) {
+  //     console.error("Error during logout:", err);
+  //   }
   };
 
   return (
