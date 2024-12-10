@@ -437,8 +437,8 @@ async function main() {
       }
     });
 
-    // Community Page Routes - CHANGE!!!
-    app.get("/api/posts", ensureAuthenticated, async (req, res) => {
+    // Community Page Routes
+    app.get("/api/posts", async (req, res) => {
       try {
         const posts = await postsCollection.find().toArray();
         res.json(posts);
