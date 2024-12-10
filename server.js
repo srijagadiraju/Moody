@@ -306,7 +306,6 @@ app.use(
     credentials: true, // Allow credentials (cookies, HTTP auth)
   })
 );
-app.options("*", cors()); // Handle preflight requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -368,11 +367,7 @@ async function main() {
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: false,
-        cookie: {
-          maxAge: 3600000, // 1 hour
-          secure: true,
-          sameSite: "none",
-        },
+        cookie: { maxAge: 3600000, secure: true, sameSite: "none" },
       })
     );
     app.use(passport.initialize());
@@ -380,8 +375,8 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
-      console.log("Session data:", req.session);
-      console.log("User data:", req.user);
+      console.log("Session data:", req.session); // Debugging logs
+      console.log("User data:", req.user); // Debugging logs
       if (req.isAuthenticated() && req.user) {
         return next();
       }
@@ -452,9 +447,7 @@ async function main() {
       }
     });
 
-    app.post("/api/posts", async (req, res) => {
-      console.log("Session for posting:", req.session);
-      console.log("User for posting:", req.user);
+    app.post("/api/posts", ensureAuthenticated, async (req, res) => {
       try {
         const { subject, message } = req.body;
         if (!subject || !message) {
@@ -473,14 +466,11 @@ async function main() {
         const result = await postsCollection.insertOne(newPost);
         res.status(201).json({ ...newPost, _id: result.insertedId });
       } catch (error) {
-        console.error("Error adding post:", error);
         res.status(400).json({ message: "Error adding post", error });
       }
     });
 
-    app.put("/api/posts/:id/like", async (req, res) => {
-      console.log("Session for liking:", req.session);
-      console.log("User for liking:", req.user);
+    app.put("/api/posts/:id/like", ensureAuthenticated, async (req, res) => {
       try {
         const postId = req.params.id;
         const result = await postsCollection.updateOne(
@@ -494,37 +484,64 @@ async function main() {
           res.status(404).json({ message: "Post not found" });
         }
       } catch (error) {
-        console.error("Error liking post:", error);
         res.status(400).json({ message: "Error liking post", error });
       }
     });
 
-    app.post("/api/posts/:id/comment", async (req, res) => {
-      console.log("Session for commenting:", req.session);
-      console.log("User for commenting:", req.user);
+    app.post(
+      "/api/posts/:id/comment",
+      ensureAuthenticated,
+      async (req, res) => {
+        try {
+          const postId = req.params.id;
+          const { text } = req.body;
+
+          if (!text) {
+            return res
+              .status(400)
+              .json({ message: "Comment text is required" });
+          }
+
+          const newComment = { text };
+
+          const result = await postsCollection.updateOne(
+            { _id: new ObjectId(postId) },
+            { $push: { comments: newComment } }
+          );
+
+          if (result.modifiedCount === 1) {
+            res.json({ message: "Comment added" });
+          } else {
+            res.status(404).json({ message: "Post not found" });
+          }
+        } catch (error) {
+          res.status(400).json({ message: "Error adding comment", error });
+        }
+      }
+    );
+
+    // Question and Activity Generation Routes
+    app.post("/generate-questions", async (req, res) => {
       try {
-        const postId = req.params.id;
-        const { text } = req.body;
-
-        if (!text) {
-          return res.status(400).json({ message: "Comment text is required" });
-        }
-
-        const newComment = { text };
-
-        const result = await postsCollection.updateOne(
-          { _id: new ObjectId(postId) },
-          { $push: { comments: newComment } }
-        );
-
-        if (result.modifiedCount === 1) {
-          res.json({ message: "Comment added" });
-        } else {
-          res.status(404).json({ message: "Post not found" });
-        }
+        const questions = await generateQuestions(req);
+        res.json(questions);
       } catch (error) {
-        console.error("Error adding comment:", error);
-        res.status(400).json({ message: "Error adding comment", error });
+        res.status(500).json({
+          error: "An error occurred while generating questions",
+          details: error.message,
+        });
+      }
+    });
+
+    app.post("/generate-activities", async (req, res) => {
+      try {
+        const activities = await generateActivities(req);
+        res.json(activities);
+      } catch (error) {
+        res.status(500).json({
+          error: "An error occurred while generating activities",
+          details: error.message,
+        });
       }
     });
 
