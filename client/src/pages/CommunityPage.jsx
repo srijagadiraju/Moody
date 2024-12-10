@@ -15,9 +15,17 @@ const CommunityPage = () => {
 
   useEffect(() => {
     fetch(`${backendUrl}/api/posts`, { credentials: "include" })
-      .then((response) => response.json())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((data) => setPosts(data))
-      .catch((error) => console.error("Fetch error:", error));
+      .catch((error) => {
+        console.error("Fetch error:", error);
+        setPosts([]); // Ensure posts is always an array
+      });
   }, []);
 
   const toggleComments = (postId) => {

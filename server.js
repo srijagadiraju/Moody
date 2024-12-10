@@ -20,7 +20,7 @@ const allowedOrigin = [
 // Middleware
 app.use(
   cors({
-    origin: allowedOrigin, // Allow specific origin
+    origin: allowedOrigin, // Allow specific origins
     methods: ["GET", "POST"], // Allow only certain methods
     credentials: true, // Allow credentials (cookies, HTTP auth)
   })
@@ -86,7 +86,7 @@ async function main() {
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 3600000 },
+        cookie: { maxAge: 3600000, secure: true, sameSite: "none" },
       })
     );
     app.use(passport.initialize());
@@ -156,7 +156,7 @@ async function main() {
     });
 
     // Community Page Routes
-    app.get("/api/posts", ensureAuthenticated, async (req, res) => {
+    app.get("/api/posts", async (req, res) => {
       try {
         const posts = await postsCollection.find().toArray();
         res.json(posts);
