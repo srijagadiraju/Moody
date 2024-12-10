@@ -302,8 +302,8 @@ const allowedOrigin = [
 app.use(
   cors({
     origin: allowedOrigin,
-    methods: ["GET", "POST", "PUT"],
-    credentials: true, // Allow credentials (cookies, HTTP auth)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -375,8 +375,6 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
-      console.log("Session data:", req.session); // Debugging logs
-      console.log("User data:", req.user); // Debugging logs
       if (req.isAuthenticated() && req.user) {
         return next();
       }
