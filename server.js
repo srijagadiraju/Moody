@@ -302,9 +302,9 @@ const allowedOrigin = [
 // Middleware
 app.use(
   cors({
-    origin: allowedOrigin, // Allow specific origins
+    origin: allowedOrigin,
     methods: ["GET", "POST", "PUT"],
-    credentials: true, // Allow credentials (cookies, HTTP auth)
+    credentials: true,
   })
 );
 app.use(express.json());
@@ -323,7 +323,6 @@ let usersCollection, postsCollection;
 
 async function main() {
   try {
-    // Connect to MongoDB
     await client.connect();
     console.log("Connected to MongoDB");
 
@@ -428,7 +427,6 @@ async function main() {
       });
     });
 
-    // API to check authentication status
     app.get("/api/check-auth", (req, res) => {
       if (req.isAuthenticated()) {
         res.status(200).json({ user: req.user });
@@ -460,8 +458,9 @@ async function main() {
           subject,
           message,
           likes: 0,
+          likedBy: [],
           comments: [],
-          userId: req.user._id, // Associate the post with the logged-in user
+          userId: req.user._id,
           createdAt: new Date(),
         };
 
@@ -475,16 +474,27 @@ async function main() {
     app.put("/api/posts/:id/like", ensureAuthenticated, async (req, res) => {
       try {
         const postId = req.params.id;
+        const userId = req.user._id;
+
+        const post = await postsCollection.findOne({
+          _id: new ObjectId(postId),
+        });
+        if (!post) {
+          return res.status(404).json({ message: "Post not found" });
+        }
+
+        if (post.likedBy.includes(userId)) {
+          return res
+            .status(400)
+            .json({ message: "You already liked this post" });
+        }
+
         const result = await postsCollection.updateOne(
           { _id: new ObjectId(postId) },
-          { $inc: { likes: 1 } }
+          { $inc: { likes: 1 }, $push: { likedBy: userId } }
         );
 
-        if (result.modifiedCount === 1) {
-          res.json({ message: "Post liked" });
-        } else {
-          res.status(404).json({ message: "Post not found" });
-        }
+        res.json({ message: "Post liked" });
       } catch (error) {
         res.status(400).json({ message: "Error liking post", error });
       }
@@ -506,7 +516,7 @@ async function main() {
 
           const newComment = {
             text,
-            userId: req.user._id, // Associate the comment with the logged-in user
+            userId: req.user._id,
             createdAt: new Date(),
           };
 
@@ -551,13 +561,11 @@ async function main() {
       }
     });
 
-    // Serve static files from React app
     app.use(express.static(path.join(__dirname, "client/build")));
     app.get("*", (req, res) => {
       res.sendFile(path.join(__dirname, "client/build", "index.html"));
     });
 
-    // Start the server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });

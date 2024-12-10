@@ -220,7 +220,6 @@
 // export default CommunityPage;
 
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import "../styles/CommunityPage.css";
 import NavBar from "../components/NavBar";
 
@@ -231,24 +230,13 @@ const CommunityPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [newPost, setNewPost] = useState({ subject: "", message: "" });
   const [commentText, setCommentText] = useState("");
+  const [user, setUser] = useState(null); // Store the logged-in user
   const postsPerPage = 12;
-  const navigate = useNavigate();
 
-  const backendUrl = "https://moody-backend.onrender.com";
+  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
 
-  // Redirect if not authenticated
   useEffect(() => {
-    fetch(`${backendUrl}/api/check-auth`, { credentials: "include" })
-      .then((response) => {
-        if (!response.ok) {
-          navigate("/login"); // Redirect to login if not authenticated
-        }
-      })
-      .catch((error) => console.error("Authentication check failed:", error));
-  }, [navigate]);
-
-  // Fetch posts
-  useEffect(() => {
+    // Fetch posts
     fetch(`${backendUrl}/api/posts`, { credentials: "include" })
       .then((response) => {
         if (!response.ok) {
@@ -259,16 +247,47 @@ const CommunityPage = () => {
       .then((data) => setPosts(data))
       .catch((error) => {
         console.error("Fetch error:", error);
-        setPosts([]);
+        setPosts([]); // Ensure posts is always an array
+      });
+
+    // Fetch user info to check if authenticated
+    fetch(`${backendUrl}/api/check-auth`, { credentials: "include" })
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Not authenticated");
+        }
+      })
+      .then((data) => setUser(data.user))
+      .catch((error) => {
+        console.error("Authentication error:", error);
+        setUser(null);
       });
   }, []);
 
-  // Toggle comments visibility
   const toggleComments = (postId) => {
     setExpandedPost(expandedPost === postId ? null : postId);
   };
 
-  // Handle adding a new post
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleAddPost = () => {
+    setShowModal(true);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+    setNewPost({ subject: "", message: "" });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewPost({ ...newPost, [name]: value });
+  };
+
   const handleAddPostSubmit = () => {
     if (newPost.subject && newPost.message) {
       fetch(`${backendUrl}/api/posts`, {
@@ -279,39 +298,42 @@ const CommunityPage = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Error adding post");
+            throw new Error(`Error adding post: ${response.statusText}`);
           }
           return response.json();
         })
         .then((createdPost) => {
           setPosts([createdPost, ...posts]);
-          setShowModal(false);
-          setNewPost({ subject: "", message: "" });
+          handleModalClose();
         })
         .catch((error) => console.error("Error adding post:", error));
     }
   };
 
-  // Handle liking a post
   const handleLike = (postId) => {
     fetch(`${backendUrl}/api/posts/${postId}/like`, {
       method: "PUT",
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Error liking post");
+          throw new Error(`Error liking post: ${response.statusText}`);
         }
+        return response.json();
+      })
+      .then(() => {
         setPosts(
           posts.map((post) =>
-            post._id === postId ? { ...post, likes: post.likes + 1 } : post
+            post._id === postId
+              ? { ...post, likes: post.likes + 1, likedBy: [...post.likedBy, user._id] }
+              : post
           )
         );
       })
       .catch((error) => console.error("Error liking post:", error));
   };
 
-  // Handle adding a comment
   const handleAddComment = (postId) => {
     if (commentText.trim()) {
       fetch(`${backendUrl}/api/posts/${postId}/comment`, {
@@ -322,7 +344,7 @@ const CommunityPage = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error("Error adding comment");
+            throw new Error(`Error adding comment: ${response.statusText}`);
           }
           return response.json();
         })
@@ -332,7 +354,10 @@ const CommunityPage = () => {
               post._id === postId
                 ? {
                     ...post,
-                    comments: [...post.comments, { text: commentText }],
+                    comments: [
+                      ...post.comments,
+                      { text: commentText, userId: user._id, createdAt: new Date() },
+                    ],
                   }
                 : post
             )
@@ -343,17 +368,24 @@ const CommunityPage = () => {
     }
   };
 
-  // Pagination logic
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  if (!user) {
+    return (
+      <div className="community-page">
+        <h1>You must be logged in to view the Community Page</h1>
+      </div>
+    );
+  }
 
   return (
     <>
       <NavBar />
       <div className="community-page">
         <h1>Community Posts</h1>
-        <button className="add-post-button" onClick={() => setShowModal(true)}>
+        <button className="add-post-button" onClick={handleAddPost}>
           Add Post
         </button>
         <div className="posts-container">
@@ -371,6 +403,7 @@ const CommunityPage = () => {
                 <button
                   className="like-button"
                   onClick={() => handleLike(post._id)}
+                  disabled={post.likedBy.includes(user._id)}
                 >
                   👍 {post.likes}
                 </button>
@@ -406,7 +439,7 @@ const CommunityPage = () => {
             (_, index) => (
               <button
                 key={index + 1}
-                onClick={() => setCurrentPage(index + 1)}
+                onClick={() => handlePageChange(index + 1)}
                 className={`page-button ${
                   currentPage === index + 1 ? "active" : ""
                 }`}
@@ -425,25 +458,21 @@ const CommunityPage = () => {
                 name="subject"
                 placeholder="Subject"
                 value={newPost.subject}
-                onChange={(e) =>
-                  setNewPost({ ...newPost, subject: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="modal-input"
               />
               <textarea
                 name="message"
                 placeholder="Message"
                 value={newPost.message}
-                onChange={(e) =>
-                  setNewPost({ ...newPost, message: e.target.value })
-                }
+                onChange={handleInputChange}
                 className="modal-input"
                 rows="4"
               ></textarea>
               <button className="submit-button" onClick={handleAddPostSubmit}>
                 Add Post
               </button>
-              <button className="close-button" onClick={() => setShowModal(false)}>
+              <button className="close-button" onClick={handleModalClose}>
                 Close
               </button>
             </div>
@@ -455,3 +484,4 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
+
