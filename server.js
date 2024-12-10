@@ -372,7 +372,7 @@ async function main() {
         cookie: {
           maxAge: 3600000,
           secure: false, // Set to false for local testing, true in production with HTTPS
-          sameSite: "lax",
+          sameSite: "none",
         },
       })
     );
