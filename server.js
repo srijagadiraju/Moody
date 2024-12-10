@@ -12,9 +12,16 @@ require("dotenv").config();
 
 const app = express();
 const port = process.env.PORT || 5001;
+const allowedOrigin = "http://localhost:3000";
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: allowedOrigin, // Allow specific origin
+    methods: ["GET", "POST"], // Allow only certain methods
+    credentials: true, // Allow credentials (cookies, HTTP auth)
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
