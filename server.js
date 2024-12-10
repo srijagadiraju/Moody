@@ -280,6 +280,8 @@
 
 // main();
 
+// server.js
+
 const { generateQuestions, generateActivities } = require("./generate");
 const express = require("express");
 const path = require("path");
@@ -369,8 +371,8 @@ async function main() {
         saveUninitialized: false,
         cookie: {
           maxAge: 3600000,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "none",
+          secure: false, // Set to false for local testing, true in production with HTTPS
+          sameSite: "lax",
         },
       })
     );
@@ -379,7 +381,13 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
-      console.log("Authentication Check:", req.isAuthenticated());
+      console.log(
+        "Authentication Check - Is Authenticated:",
+        req.isAuthenticated()
+      );
+      console.log("Session Data:", req.session);
+      console.log("User Data:", req.user);
+
       if (req.isAuthenticated()) {
         return next();
       }
@@ -433,6 +441,7 @@ async function main() {
     });
 
     app.get("/api/check-auth", (req, res) => {
+      console.log("Session in check-auth:", req.session);
       if (req.isAuthenticated()) {
         res.status(200).json({ user: req.user });
       } else {
@@ -479,7 +488,7 @@ async function main() {
     app.put("/api/posts/:id/like", ensureAuthenticated, async (req, res) => {
       try {
         const postId = req.params.id;
-        const userId = req.user._id;
+        const userId = req.user._id.toString();
         const post = await postsCollection.findOne({
           _id: new ObjectId(postId),
         });
@@ -488,19 +497,18 @@ async function main() {
           return res.status(404).json({ message: "Post not found" });
         }
 
-        const alreadyLiked = post.likedBy.includes(userId);
-        const update = alreadyLiked
-          ? { $pull: { likedBy: userId }, $inc: { likes: -1 } }
-          : { $addToSet: { likedBy: userId }, $inc: { likes: 1 } };
+        if (post.likedBy.includes(userId)) {
+          return res
+            .status(400)
+            .json({ message: "You already liked this post" });
+        }
 
         const result = await postsCollection.updateOne(
           { _id: new ObjectId(postId) },
-          update
+          { $inc: { likes: 1 }, $push: { likedBy: userId } }
         );
 
-        if (result.modifiedCount === 1) {
-          res.json({ message: alreadyLiked ? "Like removed" : "Post liked" });
-        }
+        res.json({ message: "Post liked" });
       } catch (error) {
         res.status(400).json({ message: "Error liking post", error });
       }
@@ -567,11 +575,13 @@ async function main() {
       }
     });
 
+    // Serve static files from React app
     app.use(express.static(path.join(__dirname, "client/build")));
     app.get("*", (req, res) => {
       res.sendFile(path.join(__dirname, "client/build", "index.html"));
     });
 
+    // Start the server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });

@@ -219,7 +219,10 @@
 
 // export default CommunityPage;
 
+// CommunityPage.jsx
+
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/CommunityPage.css";
 import NavBar from "../components/NavBar";
 
@@ -231,25 +234,13 @@ const CommunityPage = () => {
   const [newPost, setNewPost] = useState({ subject: "", message: "" });
   const [commentText, setCommentText] = useState("");
   const [user, setUser] = useState(null); // Store the logged-in user
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const postsPerPage = 12;
 
   const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
 
   useEffect(() => {
-    // Fetch posts
-    fetch(`${backendUrl}/api/posts`, { credentials: "include" })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((data) => setPosts(data))
-      .catch((error) => {
-        console.error("Fetch error:", error);
-        setPosts([]); // Ensure posts is always an array
-      });
-
     // Fetch user info to check if authenticated
     fetch(`${backendUrl}/api/check-auth`, { credentials: "include" })
       .then((response) => {
@@ -259,12 +250,31 @@ const CommunityPage = () => {
           throw new Error("Not authenticated");
         }
       })
-      .then((data) => setUser(data.user))
+      .then((data) => {
+        setUser(data.user);
+        // Fetch posts after confirming authentication
+        fetch(`${backendUrl}/api/posts`, { credentials: "include" })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setPosts(data);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error("Fetch error:", error);
+            setPosts([]); // Ensure posts is always an array
+            setLoading(false);
+          });
+      })
       .catch((error) => {
         console.error("Authentication error:", error);
-        setUser(null);
+        navigate("/login"); // Redirect to login page
       });
-  }, []);
+  }, [navigate]);
 
   const toggleComments = (postId) => {
     setExpandedPost(expandedPost === postId ? null : postId);
@@ -313,7 +323,6 @@ const CommunityPage = () => {
   const handleLike = (postId) => {
     fetch(`${backendUrl}/api/posts/${postId}/like`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
       .then((response) => {
@@ -368,17 +377,13 @@ const CommunityPage = () => {
     }
   };
 
+  if (loading) {
+    return <div className="community-page"><h1>Loading...</h1></div>;
+  }
+
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  if (!user) {
-    return (
-      <div className="community-page">
-        <h1>You must be logged in to view the Community Page</h1>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -484,4 +489,3 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
-
