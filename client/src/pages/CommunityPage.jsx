@@ -220,6 +220,7 @@
 // export default CommunityPage;
 
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/CommunityPage.css";
 import NavBar from "../components/NavBar";
 
@@ -230,53 +231,48 @@ const CommunityPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [newPost, setNewPost] = useState({ subject: "", message: "" });
   const [commentText, setCommentText] = useState("");
-  const [user, setUser] = useState(null); // Store the logged-in user
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const postsPerPage = 12;
 
-  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
+  const backendUrl = "https://moody-backend.onrender.com";
 
   useEffect(() => {
-    // Fetch posts
-    fetch(`${backendUrl}/api/posts`, { credentials: "include" })
+    fetch(`${backendUrl}/api/check-auth`, { credentials: "include" })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          throw new Error("Not authenticated");
         }
         return response.json();
       })
-      .then((data) => setPosts(data))
-      .catch((error) => {
-        console.error("Fetch error:", error);
-        setPosts([]); // Ensure posts is always an array
-      });
-
-    // Fetch user info to check if authenticated
-    fetch(`${backendUrl}/api/check-auth`, { credentials: "include" })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Not authenticated");
-        }
+      .then(() => {
+        fetch(`${backendUrl}/api/posts`, { credentials: "include" })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to fetch posts");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            setPosts(data);
+            setLoading(false);
+          })
+          .catch((err) => setError(err.message));
       })
-      .then((data) => setUser(data.user))
-      .catch((error) => {
-        console.error("Authentication error:", error);
-        setUser(null);
+      .catch((err) => {
+        setError(err.message);
+        navigate("/login");
       });
-  }, []);
+  }, [navigate]);
 
   const toggleComments = (postId) => {
     setExpandedPost(expandedPost === postId ? null : postId);
   };
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page) => setCurrentPage(page);
 
-  const handleAddPost = () => {
-    setShowModal(true);
-  };
+  const handleAddPost = () => setShowModal(true);
 
   const handleModalClose = () => {
     setShowModal(false);
@@ -298,7 +294,7 @@ const CommunityPage = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`Error adding post: ${response.statusText}`);
+            throw new Error("Failed to add post");
           }
           return response.json();
         })
@@ -306,19 +302,18 @@ const CommunityPage = () => {
           setPosts([createdPost, ...posts]);
           handleModalClose();
         })
-        .catch((error) => console.error("Error adding post:", error));
+        .catch((err) => setError(err.message));
     }
   };
 
   const handleLike = (postId) => {
     fetch(`${backendUrl}/api/posts/${postId}/like`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       credentials: "include",
     })
       .then((response) => {
         if (!response.ok) {
-          throw new Error(`Error liking post: ${response.statusText}`);
+          throw new Error("Failed to like post");
         }
         return response.json();
       })
@@ -326,12 +321,12 @@ const CommunityPage = () => {
         setPosts(
           posts.map((post) =>
             post._id === postId
-              ? { ...post, likes: post.likes + 1, likedBy: [...post.likedBy, user._id] }
+              ? { ...post, likes: post.likes + 1, likedBy: [...post.likedBy, "currentUser"] }
               : post
           )
         );
       })
-      .catch((error) => console.error("Error liking post:", error));
+      .catch((err) => setError(err.message));
   };
 
   const handleAddComment = (postId) => {
@@ -344,7 +339,7 @@ const CommunityPage = () => {
       })
         .then((response) => {
           if (!response.ok) {
-            throw new Error(`Error adding comment: ${response.statusText}`);
+            throw new Error("Failed to add comment");
           }
           return response.json();
         })
@@ -354,31 +349,23 @@ const CommunityPage = () => {
               post._id === postId
                 ? {
                     ...post,
-                    comments: [
-                      ...post.comments,
-                      { text: commentText, userId: user._id, createdAt: new Date() },
-                    ],
+                    comments: [...post.comments, { text: commentText, userId: "currentUser" }],
                   }
                 : post
             )
           );
           setCommentText("");
         })
-        .catch((error) => console.error("Error adding comment:", error));
+        .catch((err) => setError(err.message));
     }
   };
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
-
-  if (!user) {
-    return (
-      <div className="community-page">
-        <h1>You must be logged in to view the Community Page</h1>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -391,90 +378,45 @@ const CommunityPage = () => {
         <div className="posts-container">
           {currentPosts.map((post) => (
             <div key={post._id} className="post-card">
-              <h2 className="post-subject">{post.subject}</h2>
-              <p className="post-message">{post.message}</p>
-              <div className="post-actions">
-                <button
-                  className="comment-button"
-                  onClick={() => toggleComments(post._id)}
-                >
-                  {expandedPost === post._id ? "▼" : "▶"} Comments
-                </button>
-                <button
-                  className="like-button"
-                  onClick={() => handleLike(post._id)}
-                  disabled={post.likedBy.includes(user._id)}
-                >
-                  👍 {post.likes}
-                </button>
-              </div>
+              <h2>{post.subject}</h2>
+              <p>{post.message}</p>
+              <button onClick={() => handleLike(post._id)}>Like {post.likes}</button>
+              <button onClick={() => toggleComments(post._id)}>
+                {expandedPost === post._id ? "Hide" : "Show"} Comments
+              </button>
               {expandedPost === post._id && (
-                <div className="comments-section">
-                  {post.comments.map((comment, index) => (
-                    <p key={index} className="comment">
-                      {comment.text}
-                    </p>
+                <div>
+                  {post.comments.map((comment, idx) => (
+                    <p key={idx}>{comment.text}</p>
                   ))}
                   <input
-                    type="text"
-                    placeholder="Add a comment..."
-                    className="comment-input"
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Add a comment"
                   />
-                  <button
-                    className="comment-input-button"
-                    onClick={() => handleAddComment(post._id)}
-                  >
-                    Comment
-                  </button>
+                  <button onClick={() => handleAddComment(post._id)}>Comment</button>
                 </div>
               )}
             </div>
           ))}
         </div>
-        <div className="pagination">
-          {Array.from(
-            { length: Math.ceil(posts.length / postsPerPage) },
-            (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={`page-button ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-              >
-                {index + 1}
-              </button>
-            )
-          )}
-        </div>
         {showModal && (
           <div className="modal">
             <div className="modal-content">
-              <h2>Add New Post</h2>
               <input
-                type="text"
                 name="subject"
-                placeholder="Subject"
                 value={newPost.subject}
                 onChange={handleInputChange}
-                className="modal-input"
+                placeholder="Subject"
               />
               <textarea
                 name="message"
-                placeholder="Message"
                 value={newPost.message}
                 onChange={handleInputChange}
-                className="modal-input"
-                rows="4"
-              ></textarea>
-              <button className="submit-button" onClick={handleAddPostSubmit}>
-                Add Post
-              </button>
-              <button className="close-button" onClick={handleModalClose}>
-                Close
-              </button>
+                placeholder="Message"
+              />
+              <button onClick={handleAddPostSubmit}>Post</button>
+              <button onClick={handleModalClose}>Cancel</button>
             </div>
           </div>
         )}
@@ -484,4 +426,3 @@ const CommunityPage = () => {
 };
 
 export default CommunityPage;
-

@@ -280,7 +280,6 @@
 
 // main();
 
-// Srija
 const { generateQuestions, generateActivities } = require("./generate");
 const express = require("express");
 const path = require("path");
@@ -323,6 +322,7 @@ let usersCollection, postsCollection;
 
 async function main() {
   try {
+    // Connect to MongoDB
     await client.connect();
     console.log("Connected to MongoDB");
 
@@ -367,7 +367,11 @@ async function main() {
         secret: process.env.SESSION_SECRET || "default_secret_key",
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 3600000, secure: true, sameSite: "none" },
+        cookie: {
+          maxAge: 3600000,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: "none",
+        },
       })
     );
     app.use(passport.initialize());
@@ -375,6 +379,7 @@ async function main() {
 
     // Middleware to check if a user is authenticated
     function ensureAuthenticated(req, res, next) {
+      console.log("Authentication Check:", req.isAuthenticated());
       if (req.isAuthenticated()) {
         return next();
       }
@@ -475,26 +480,27 @@ async function main() {
       try {
         const postId = req.params.id;
         const userId = req.user._id;
-
         const post = await postsCollection.findOne({
           _id: new ObjectId(postId),
         });
+
         if (!post) {
           return res.status(404).json({ message: "Post not found" });
         }
 
-        if (post.likedBy.includes(userId)) {
-          return res
-            .status(400)
-            .json({ message: "You already liked this post" });
-        }
+        const alreadyLiked = post.likedBy.includes(userId);
+        const update = alreadyLiked
+          ? { $pull: { likedBy: userId }, $inc: { likes: -1 } }
+          : { $addToSet: { likedBy: userId }, $inc: { likes: 1 } };
 
         const result = await postsCollection.updateOne(
           { _id: new ObjectId(postId) },
-          { $inc: { likes: 1 }, $push: { likedBy: userId } }
+          update
         );
 
-        res.json({ message: "Post liked" });
+        if (result.modifiedCount === 1) {
+          res.json({ message: alreadyLiked ? "Like removed" : "Post liked" });
+        }
       } catch (error) {
         res.status(400).json({ message: "Error liking post", error });
       }
