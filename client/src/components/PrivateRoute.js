@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
-const backendUrl = "https://moody-backend.onrender.com";
-
+// const backendUrl = "https://moody-backend.onrender.com";
+const backendUrl = "https://moody-be.onrender.com";
 const PrivateRoute = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
 

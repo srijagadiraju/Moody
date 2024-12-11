@@ -17,8 +17,8 @@ const SignUpLoginPage = () => {
   });
   const [prefilledLoginData, setPrefilledLoginData] = useState(null);
 
-  const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
-
+  // const backendUrl = "https://moody-backend.onrender.com"; // Backend base URL
+  const backendUrl = "https://moody-be.onrender.com";
   useEffect(() => {
     if (!isSignUp && prefilledLoginData) {
       setFormData(prefilledLoginData);

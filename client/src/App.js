@@ -8,6 +8,7 @@ import PrivateRoute from "./components/PrivateRoute"; // Import PrivateRoute
 import Questionnaire from "./pages/Questionnaire";
 import ActivitySuggestions from "./pages/ActivitySuggestions";
 import "./index.css";
+import MeditationActivity from "./pages/MeditationActivity";
 
 function App() {
   return (
@@ -48,6 +49,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ActivitySuggestions />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/meditation"
+            element={
+              <PrivateRoute>
+                <MeditationActivity />
               </PrivateRoute>
             }
           />

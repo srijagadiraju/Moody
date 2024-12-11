@@ -4,8 +4,8 @@ import moodyLogo from "../images/moody.png"; // Import the image properly
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
-const backendUrl = "https://moody-backend.onrender.com"; // Add backendUrl here
-
+// const backendUrl = "https://moody-backend.onrender.com"; // Add backendUrl here
+const backendUrl = "https://moody-be.onrender.com";
 const NavBar = () => {
   const navigate = useNavigate();
   const { setAuth } = useAuth(); // Use setAuth from AuthContext
@@ -23,22 +23,22 @@ const NavBar = () => {
           });
         }
         console.log("Backend confirmed logout.");
-  
+
         // Clear authentication state
         setAuth({
           isAuthenticated: false,
           user: null,
           loading: false,
         });
-  
+
         // Clear localStorage if persisting auth state
         localStorage.removeItem("authState");
-  
+
         // Redirect to the landing page
         navigate("/");
       })
       .catch((error) => console.error("Error during logout:", error));
-  };  
+  };
 
   return (
     <div className="nav-bar">
