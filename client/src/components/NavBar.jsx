@@ -4,18 +4,26 @@ import moodyLogo from "../images/moody.png"; // Import the image properly
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 
+const backendUrl = "https://moody-backend.onrender.com"; // Add backendUrl here
+
 const NavBar = () => {
   const navigate = useNavigate();
   const { setAuth } = useAuth(); // Use setAuth from AuthContext
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch("/api/logout", {
-        method: "GET",
-        credentials: "include", // Ensures cookies are sent
-      });
+  const handleLogout = () => {
+    fetch(`${backendUrl}/api/logout`, {
+      method: "GET",
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((error) => {
+            console.error("Backend logout error:", error);
+            throw new Error("Logout failed on backend.");
+          });
+        }
+        console.log("Backend confirmed logout.");
 
-      if (response.ok) {
         // Clear authentication state
         setAuth({
           isAuthenticated: false,
@@ -23,17 +31,13 @@ const NavBar = () => {
           loading: false,
         });
 
-        // Optionally clear localStorage if you're persisting auth state
+        // Clear localStorage if persisting auth state
         localStorage.removeItem("authState");
 
         // Redirect to the landing page
         navigate("/");
-      } else {
-        console.error("Logout failed");
-      }
-    } catch (err) {
-      console.error("Error during logout:", err);
-    }
+      })
+      .catch((error) => console.error("Error during logout:", error));
   };
 
   return (
